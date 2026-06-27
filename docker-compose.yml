@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  app1:
+    build: .
+    container_name: laravel-app-1
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env.app1
+    depends_on:
+      - mysql1
+    restart: unless-stopped
+
+  app2:
+    build: .
+    container_name: laravel-app-2
+    ports:
+      - "8001:8000"
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env.app2
+    depends_on:
+      - mysql2
+    restart: unless-stopped
+
+  mysql1:
+    image: mysql:8.0
+    container_name: mysql1
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app1
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql1_data:/var/lib/mysql
+    restart: unless-stopped
+
+  mysql2:
+    image: mysql:8.0
+    container_name: mysql2
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app2
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql2_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql1_data:
+  mysql2_data:
